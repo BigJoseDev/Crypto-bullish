@@ -31,9 +31,15 @@ const SignUp = () => {
   };
 
   return (
-    <div className="flex h-screen w-full bg-black text-white justify-center items-center">
-      <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-96">
-        <h1 className="text-3xl font-bold text-center">Sign Up</h1>
+    <div className="flex h-screen w-full bg-black text-white justify-center items-center " style={{
+      backgroundImage: `url('https://images.mid-day.com/images/images/2023/jun/Tradecurve-0606_d.jpg')`,
+      backgroundSize: 'cover',   // Ensures the image covers the whole div
+      backgroundPosition: 'center',  // Centers the background image
+      backgroundRepeat: 'no-repeat', // Prevents the image from repeating
+    }}>
+      
+      <div className="bg-gray p-8 rounded-lg shadow-lg w-96 ">
+        <h1 className="text-3xl font-bold text-center ">Sign Up</h1>
         {errorMessage && <p className="text-red-500 text-center">{errorMessage}</p>}
         {successMessage && <p className="text-green-500 text-center">{successMessage}</p>}
         <form onSubmit={handleSubmit} className="flex flex-col space-y-4 mt-4">
