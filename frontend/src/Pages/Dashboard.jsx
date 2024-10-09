@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import { Line } from 'react-chartjs-2';
 import { Chart, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import './Dashboard.css';
+import QRCode from 'react-qr-code';
 
 // Register Chart.js components
 Chart.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
@@ -18,37 +19,41 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const [selectedToken, setSelectedToken] = useState(null);
   const [amount, setAmount] = useState('');
+  const [isDepositModalOpen, setIsDepositModalOpen] = useState(false); // State for deposit modal
+  const [depositToken, setDepositToken] = useState(null); // State for the token to be deposited
+
+  const walletAddresses = {
+    bitcoin: 'bc1qxy2kgdygjrsqtzq2n0yrf2476', // Your Bitcoin wallet address
+    ethereum: '0xYourEthereumWalletAddress', // Replace with your Ethereum wallet address
+    solana: 'YourSolanaWalletAddress', // Replace with your Solana wallet address
+  };
 
   useEffect(() => {
-    // Fetch token data from CoinGecko API
     const fetchTokens = async () => {
       const response = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd');
       const data = await response.json();
-      setTokens(data.slice(0, 100)); // Initially display 100 tokens
-      setFilteredTokens(data.slice(0, 100)); // Set filtered tokens to display initially
+      setTokens(data.slice(0, 500)); // Initially display 100 tokens
+      setFilteredTokens(data.slice(0, 6)); // Set filtered tokens to display initially
     };
     fetchTokens();
 
-    // Placeholder balance for the user
-    setBalance('100,000');
+    setBalance(20000); // Placeholder balance for the user
   }, []);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  // Handle search functionality
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
     const filtered = tokens.filter((token) =>
       token.name.toLowerCase().includes(e.target.value.toLowerCase())
     );
-    setFilteredTokens(filtered.slice(0, 6)); // Show filtered tokens, limited to 6
+    setFilteredTokens(filtered.slice(0, 6));
   };
 
-  // Function to generate chart data for each token
   const generateChartData = (token) => ({
-    labels: ['24h Low', '24h High'], // Using 24h low and high for simplicity
+    labels: ['24h Low', '24h High'],
     datasets: [
       {
         label: `${token.name} Price`,
@@ -68,20 +73,21 @@ const Dashboard = () => {
       return;
     }
 
-    setLoading(true); // Set loading to true
+    setLoading(true);
 
-    // Simulate an API call to buy the token
-    await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulated delay for loading
+    await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulated delay
 
+    const totalCost = selectedToken.current_price * amount;
     setPurchasedTokens((prevTokens) => [
       ...prevTokens,
-      { token: selectedToken, amount: parseFloat(amount), purchasePrice: selectedToken.current_price }
-    ]); // Add purchased token with purchase price to the list
+      { token: selectedToken, amount: parseFloat(amount), purchasePrice: selectedToken.current_price },
+    ]);
+    setBalance((prevBalance) => prevBalance - totalCost);
 
-    setLoading(false); // Set loading to false
-    setIsModalOpen(false); // Close the modal
-    setAmount(''); // Reset the amount after purchase
-    setSelectedToken(null); // Reset selected token
+    setLoading(false);
+    setIsModalOpen(false);
+    setAmount('');
+    setSelectedToken(null);
   };
 
   return (
@@ -89,7 +95,6 @@ const Dashboard = () => {
       {/* Sidebar */}
       <div className={`sidebar ${isSidebarOpen ? 'open' : 'closed'} bg-gray-800 text-white fixed top-0 left-0 h-full transition-all duration-300`}>
         <div className="sidebar-header flex justify-between items-center p-4">
-          {/* <h2 className="text-lg font-bold">Menu</h2> */}
           <button onClick={toggleSidebar} className="sidebar-close-btn">
             <FaTimes />
           </button>
@@ -107,7 +112,6 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <div className={`main-content ${isSidebarOpen ? 'shrink' : 'expand'} ml-64 transition-all duration-300 p-6 bg-gray-100 min-h-screen`}>
-        {/* Hamburger Button */}
         <button className="hamburger fixed top-4 left-4 text-white text-2xl" onClick={toggleSidebar}>
           {isSidebarOpen ? <FaTimes /> : <FaBars />}
         </button>
@@ -118,128 +122,150 @@ const Dashboard = () => {
         <div className="border p-6 mb-6 rounded-lg bg-white shadow-lg">
           <h2 className="font-bold text-2xl text-gray-700 mb-2">Portfolio Overview</h2>
           <p className="text-lg text-gray-600">
-            Total Balance: <span className="font-semibold text-blue-500">${balance}</span>
+            Total Balance: <span className="font-semibold text-blue-500">${balance.toLocaleString()}</span>
           </p>
         </div>
 
-        {/* Added Bitcoin, Ethereum, Solana Balances */}
+        {/* Balance Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 mb-6">
+          {/* Bitcoin Balance Card */}
           <div className="card bg-green-500 text-white p-4 rounded-lg">
             <h2 className="font-bold">Bitcoin Balance</h2>
-            <p>$50,000.00</p>
+            <p>$20,000</p>
+            <button
+              className="bg-white text-green-500 py-2 px-4 rounded-lg mt-4 hover:bg-gray-100 transition-all duration-300"
+              onClick={() => { setDepositToken('bitcoin'); setIsDepositModalOpen(true); }} // Open deposit modal for Bitcoin
+            >
+              Deposit Bitcoin
+            </button>
           </div>
+
+          {/* Ethereum Balance Card */}
           <div className="card bg-blue-500 text-white p-4 rounded-lg">
             <h2 className="font-bold">Ethereum Balance</h2>
-            <p>$30,000.00</p>
+            <p>$30.00</p>
+            <button
+              className="bg-white text-blue-500 py-2 px-4 rounded-lg mt-4 hover:bg-gray-100 transition-all duration-300"
+              onClick={() => { setDepositToken('ethereum'); setIsDepositModalOpen(true); }} // Open deposit modal for Ethereum
+            >
+              Deposit Ethereum
+            </button>
           </div>
-          <div className="card bg-yellow-500 text-white p-4 rounded-lg">
+
+          {/* Solana Balance Card */}
+          <div className="card bg-purple-500 text-white p-4 rounded-lg">
             <h2 className="font-bold">Solana Balance</h2>
-            <p>$20,000.00</p>
+            <p>$0.00</p>
+            <button
+              className="bg-white text-purple-500 py-2 px-4 rounded-lg mt-4 hover:bg-gray-100 transition-all duration-300"
+              onClick={() => { setDepositToken('solana'); setIsDepositModalOpen(true); }} // Open deposit modal for Solana
+            >
+              Deposit Solana
+            </button>
           </div>
         </div>
 
-        <div className="mt-10">
-          <h2 className="text-2xl font-bold text-gray-700 mb-4">Your Investments</h2>
-          <div className="border p-6 bg-white rounded-lg shadow-lg text-center">
-            {purchasedTokens.length > 0 ? (
-              purchasedTokens.map((purchasedToken, index) => {
-                const currentPrice = purchasedToken.token.current_price;
-                const profitOrLoss = (currentPrice - purchasedToken.purchasePrice) * purchasedToken.amount;
-                const isProfit = profitOrLoss > 0;
-
-                return (
-                  <div key={index} className={`border p-4 rounded-lg mb-4 ${isProfit ? 'bg-green-100' : 'bg-red-100'}`}>
-                    <p className="text-lg font-semibold">
-                      {purchasedToken.amount} of {purchasedToken.token.name}
-                    </p>
-                    <p className="text-gray-600">
-                      Current Price: ${currentPrice} | {isProfit ? 'Profit' : 'Loss'}: ${profitOrLoss.toFixed(2)}
-                    </p>
-                  </div>
-                );
-              })
-            ) : (
-              <div>
-                <p className="text-lg text-gray-600 mb-4">You have no investments yet.</p>
-                <button
-                  className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300 ease-in-out"
-                  onClick={() => setIsModalOpen(true)} // Open modal on button click
-                >
-                  Buy Tokens
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-        <br />
-
-        {/* Search Bar */}
-        <div className="mb-6 flex items-center gap-2">
-          <input
-            type="text"
-            className="border p-2"
-            placeholder="Search for a token..."
-            value={searchQuery}
-            onChange={handleSearch}
-          />
-          <button className="bg-blue-500 text-white py-2 px-3 rounded-md hover:bg-blue-600 transition duration-300 ease-in-out">
-            Search
-          </button>
-        </div>
-
-        {/* Live Cryptocurrency Prices with Graphs */}
-        <h2 className="text-2xl font-bold text-gray-700 mb-4">Live Cryptocurrency Prices</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredTokens.map((token) => (
-            <div key={token.id} className="bg-white p-4 rounded-lg shadow-lg">
-              <h3 className="font-bold">{token.name} ({token.symbol.toUpperCase()})</h3>
-              <p>Current Price: ${token.current_price}</p>
-              <Line data={generateChartData(token)} options={{ responsive: true }} />
+        {/* Deposit Modal */}
+        {isDepositModalOpen && (
+          <div className="modal-overlay fixed inset-13 flex items-center justify-center">
+            <div className="modal bg-white p-20  rounded-lg shadow-lg text-center">
+              <h2 className="text-xl font-bold mb-4">Deposit {depositToken.charAt(0).toUpperCase() + depositToken.slice(1)}</h2>
+              <p className="text-gray-600 mb-4">Send {depositToken.charAt(0).toUpperCase() + depositToken.slice(1)} to the wallet address below:</p>
+              <QRCode value={walletAddresses[depositToken]} size={150} className="mb-4 px-1 ml-12" />
+              <p className="font-semibold mb-4 ">{walletAddresses[depositToken]}</p>
               <button
-                className="bg-green-500 text-white mt-4 py-2 px-4 rounded-md hover:bg-green-600 transition duration-300 ease-in-out"
-                onClick={() => {
-                  setSelectedToken(token);
-                  setIsModalOpen(true);
-                }}
-              >
-                Buy {token.name}
-              </button>
-            </div>
-          ))}
-        </div>
-
-        {/* Buy Tokens Modal */}
-        {isModalOpen && (
-          <div className="modal fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="modal-content bg-white p-6 rounded-lg shadow-lg">
-              <h2 className="text-xl font-bold mb-4">Buy {selectedToken?.name}</h2>
-              <p>Current Price: ${selectedToken?.current_price}</p>
-              <div className="mb-4">
-                <label className="block mb-2">Amount:</label>
-                <input
-                  type="number"
-                  className="border p-2 w-full"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  placeholder="Enter amount to buy" 
-                />
-              </div>
-              <button
-                className={`bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300 ease-in-out ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                onClick={handleBuyToken}
-                disabled={loading}
-              >
-                {loading ? 'Processing...' : 'Buy Token'}
-              </button>
-              <button
-                className="mt-4  bg-red-500 text-white py-2 px-8 ml-3 rounded-md hover:bg-red-600 transition duration-300 ease-in-out"
-                onClick={() => setIsModalOpen(false)} // Close modal
+                className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition duration-300 ease-in-out"
+                onClick={() => setIsDepositModalOpen(false)}
               >
                 Close
               </button>
             </div>
           </div>
         )}
+
+        {/* Investment History */}
+        <div className="investment-history mt-6">
+          <h2 className="font-bold text-xl text-gray-800 mb-4">Your Investments</h2>
+          {purchasedTokens.length === 0 ? (
+            <p>No investments yet.</p>
+          ) : (
+            purchasedTokens.map((investment, index) => (
+              <div key={index} className="investment-card border rounded-lg p-4 mb-4 bg-white shadow">
+                <h3 className="font-bold">{investment.token.name}</h3>
+                <p>Amount: {investment.amount}</p>
+                <p>Purchased Price: ${investment.purchasePrice}</p>
+                <p>Current Value: ${investment.amount * investment.token.current_price}</p>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Token List */}
+        <div className="token-list mt-6">
+          <h2 className="font-bold text-xl text-gray-800 mb-4">Available Tokens</h2>
+          <input
+            type="text"
+            placeholder="Search Tokens..."
+            value={searchQuery}
+            onChange={handleSearch}
+            className="border p-2 rounded mb-4 w-full"
+          />
+
+          {/* Token Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2  lg:grid-cols-3 gap-4">
+            {filteredTokens.map((token) => (
+              <div key={token.id} className="border rounded-lg p-4 bg-white shadow">
+                <h3 className="font-bold text-lg">{token.name}</h3>
+                <p>Current Price: ${token.current_price}</p>
+                <button
+                  className="bg-green-500 text-white py-2 px-4 rounded-lg mt-4"
+                  onClick={() => {
+                    setSelectedToken(token);
+                    setIsModalOpen(true);
+                  }}
+                >
+                  Buy {token.name}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Buy Token Modal */}
+        {isModalOpen && (
+          <div className="modal-overlay fixed inset-0   flex items-center justify-center">
+            <div className="modal bg-white p-16 rounded-lg shadow-lg">
+              <h2 className="text-xl font-bold mb-4">Buy {selectedToken.name}</h2>
+              <p className="mb-4">Current Price: ${selectedToken.current_price}</p>
+              <input
+                type="number"
+                placeholder="Amount"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                className="border p-2 rounded mb-4 w-full"
+              />
+              <button
+                className={`bg-blue-500 text-white py-2 px-4 rounded-lg mt-4 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                onClick={handleBuyToken}
+                disabled={loading}
+              >
+                {loading ? 'Buying...' : 'Buy'}
+              </button>
+              <button
+                className="bg-red-500 text-white py-2 px-4 rounded-lg mt-4 ml-2"
+                onClick={() => {
+                  setIsModalOpen(false);
+                  setSelectedToken(null);
+                  setAmount('');
+                }}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+
+        
       </div>
     </div>
   );

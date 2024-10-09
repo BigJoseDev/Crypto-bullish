@@ -20,7 +20,7 @@ const SignIn = () => {
         navigate('/dashboard');
       }
     } catch (error) {
-      setError('Sign in failed');
+      setError('incorrect login info');
     }
   };
 

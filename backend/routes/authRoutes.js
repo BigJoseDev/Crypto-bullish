@@ -3,11 +3,16 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
+const authController = require('../controllers/authController')
+
+// signup route
+router.post('/register', authController.signup);
+
 
 // Login Route
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
-
+  
   try {
     const user = await User.findOne({ email });
     if (!user) {
