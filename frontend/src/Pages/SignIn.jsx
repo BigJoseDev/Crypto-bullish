@@ -20,31 +20,31 @@ const SignIn = () => {
         navigate('/dashboard');
       }
     } catch (error) {
-      setError('incorrect login info');
+      setError('Incorrect login information');
     }
   };
 
   return (
     <div className="flex h-screen w-full bg-black text-white justify-center items-center" 
-    style={{
-      backgroundImage: `url('https://images.mid-day.com/images/images/2023/jun/Tradecurve-0606_d.jpg')`,
-      backgroundSize: 'cover',   // Ensures the image covers the whole div
-      backgroundPosition: 'center',  // Centers the background image
-      backgroundRepeat: 'no-repeat', // Prevents the image from repeating
-    }}>
-      <div className="bg-gray p-8 rounded-lg shadow-lg w-96">
-        <h2 className="text-3xl font-bold text-center">Sign In</h2>
+      style={{
+        backgroundImage: `url('https://criptotendencia.com/wp-content/uploads/2024/03/En-oferta-Pantera-Capital-busca-comprar-SOL-del-patrimonio-de-FTX.jpg')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}>
+      <div className="bg-black bg-opacity-70 p-8 rounded-lg shadow-2xl w-full max-w-md">
+        <h2 className="text-4xl font-bold text-center mb-6">Sign In</h2>
 
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
-        <form onSubmit={handleSubmit} className="flex flex-col space-y-4 mt-4">
+        <form onSubmit={handleSubmit} className="flex flex-col space-y-6">
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
             required
-            className="border rounded p-2 bg-gray-700 text-white border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="border rounded-lg p-3 bg-gray-800 text-white placeholder-gray-400 border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
           />
           <input
             type="password"
@@ -52,20 +52,20 @@ const SignIn = () => {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
             required
-            className="border rounded p-2 bg-gray-700 text-white border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="border rounded-lg p-3 bg-gray-800 text-white placeholder-gray-400 border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
           />
           <button
             type="submit"
-            className="p-2 bg-green-500 text-black rounded hover:bg-green-400 transition duration-300"
+            className="p-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300 shadow-lg"
           >
             Sign In
           </button>
         </form>
 
-        <div className="text-center mt-4">
-          <p className="text-sm">
+        <div className="text-center mt-6">
+          <p className="text-sm text-gray-300">
             Don't have an account?{' '}
-            <button onClick={() => navigate('/signup')} className="text-green-500 hover:underline">
+            <button onClick={() => navigate('/signup')} className="text-green-400 hover:underline">
               Sign Up
             </button>
           </p>

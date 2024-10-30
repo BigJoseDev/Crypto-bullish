@@ -1,3 +1,4 @@
+// src/Pages/SignUp.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
@@ -17,8 +18,12 @@ const SignUp = () => {
 
     try {
       const response = await axios.post('http://localhost:5000/api/auth/register', { username, email, password });
-      setSuccessMessage('User registered successfully!'); // Display success message
-      console.log(response.data);
+      setSuccessMessage('Account created successfully!'); // Display success message
+
+      // Wait for a few seconds before redirecting
+      setTimeout(() => {
+        navigate('/signin'); // Redirect to sign-in page
+      }, 4000); // 4000 milliseconds = 3 seconds
     } catch (error) {
       setErrorMessage(error.response.data.message || 'Registration failed'); // Display error message
       console.error(error);
@@ -31,25 +36,29 @@ const SignUp = () => {
   };
 
   return (
-    <div className="flex h-screen w-full bg-black text-white justify-center items-center " style={{
-      backgroundImage: `url('https://images.mid-day.com/images/images/2023/jun/Tradecurve-0606_d.jpg')`,
-      backgroundSize: 'cover',   // Ensures the image covers the whole div
-      backgroundPosition: 'center',  // Centers the background image
-      backgroundRepeat: 'no-repeat', // Prevents the image from repeating
+    <div className="flex h-screen w-full bg-black text-white justify-center items-center" style={{
+      backgroundImage: `url('https://criptotendencia.com/wp-content/uploads/2024/03/En-oferta-Pantera-Capital-busca-comprar-SOL-del-patrimonio-de-FTX.jpg')`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
     }}>
-      
-      <div className="bg-gray p-8 rounded-lg shadow-lg w-96 ">
-        <h1 className="text-3xl font-bold text-center ">Sign Up</h1>
-        {errorMessage && <p className="text-red-500 text-center">{errorMessage}</p>}
-        {successMessage && <p className="text-green-500 text-center">{successMessage}</p>}
-        <form onSubmit={handleSubmit} className="flex flex-col space-y-4 mt-4">
+      <div className="bg-black bg-opacity-70 p-8 rounded-lg shadow-2xl w-full max-w-md">
+        <h1 className="text-4xl font-bold text-center mb-6">Sign Up</h1>
+        {errorMessage && <p className="text-red-500 text-center mb-4">{errorMessage}</p>}
+        {successMessage && (
+          <div className="text-green-500 text-center mb-4">
+            <p className="text-lg">{successMessage}</p>
+            <p className="text-sm">Redirecting to sign in...</p>
+          </div>
+        )}
+        <form onSubmit={handleSubmit} className="flex flex-col space-y-6">
           <input
             type="text"
             placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
-            className="border rounded p-2 bg-gray-700 text-white border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="border rounded-lg p-3 bg-gray-800 text-white placeholder-gray-400 border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
           />
           <input
             type="email"
@@ -57,7 +66,7 @@ const SignUp = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="border rounded p-2 bg-gray-700 text-white border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="border rounded-lg p-3 bg-gray-800 text-white placeholder-gray-400 border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
           />
           <input
             type="password"
@@ -65,16 +74,16 @@ const SignUp = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="border rounded p-2 bg-gray-700 text-white border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="border rounded-lg p-3 bg-gray-800 text-white placeholder-gray-400 border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
           />
-          <button type="submit" className="p-2 bg-green-500 text-black rounded hover:bg-green-400 transition duration-300">
+          <button type="submit" className="p-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300 shadow-lg">
             Sign Up
           </button>
         </form>
-        <div className="text-center mt-4">
-          <p className="text-sm">
+        <div className="text-center mt-6">
+          <p className="text-sm text-gray-300">
             Already have an account?{' '}
-            <button onClick={handleSignIn} className="text-green-500 hover:underline">
+            <button onClick={handleSignIn} className="text-green-400 hover:underline">
               Sign In
             </button>
           </p>

@@ -1,9 +1,13 @@
+// src/Components/Navbar.jsx
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-const Navbar = () => {
+// Import the logo
+import logo from '../assets/logo.png'; // Use your local file path
+
+const Navbar = ({ setIsAuthenticated }) => {
   const [isOpen, setIsOpen] = useState(false); // State to toggle the mobile menu
-  const [isAuthenticated, setIsAuthenticated] = useState(true); // State for authentication
+  const [isAuthenticated, setIsAuthenticatedLocal] = useState(false); // Local state for authentication
   const location = useLocation(); // Hook to get the current route
 
   const toggleMenu = () => {
@@ -18,20 +22,18 @@ const Navbar = () => {
   // Function to handle logout
   const handleLogout = () => {
     // Perform logout logic here (e.g., clearing tokens, etc.)
-    setIsAuthenticated(false); // Update the authentication state
-
-
-    // const handleSignin =()=>{
-      
-    //   setIsAuthenticated(true)
-    // }
+    localStorage.removeItem('token'); // Clear the token
+    setIsAuthenticatedLocal(false); // Update local authentication state
+    setIsAuthenticated(false); // Update the global authentication state
   };
 
   return (
-    // Only adding `fixed top-0 left-0 right-0 z-10` to fix the navbar at the top
     <nav className="bg-gray-800 p-4 shadow-md fixed top-0 left-0 right-0 z-10">
       <div className="container mx-auto flex justify-between items-center">
-        <h1 className="text-white text-2xl font-bold font-serif">CRYPTO BULLISH</h1>
+        <div className="flex items-center">
+          <Link to='/'><img src={logo} alt="Pantera Capital Logo" className="h-10 mr-3" /></Link>
+          <h1 className="text-white text-2xl font-bold font-serif">PANTERA CAPITAL</h1>
+        </div>
 
         {/* Hamburger Icon for Mobile */}
         <div className="md:hidden">
@@ -42,7 +44,7 @@ const Navbar = () => {
               viewBox="0 0 24 24"
               strokeWidth={2}
               stroke="currentColor"
-              className="w-6 h-6"
+              className="w-6 h-6 transition-transform duration-300"
             >
               {isOpen ? (
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -54,32 +56,30 @@ const Navbar = () => {
         </div>
 
         {/* Navigation Links */}
-        <ul className={`flex-col font-serif md:flex md:flex-row space-y-4 md:space-y-0 md:space-x-6 text-white absolute md:static bg-black md:bg-transparent w-full md:w-auto transition-transform duration-300 ${isOpen ? 'top-16' : 'top-[-200px]'}`}>
+        <ul
+          className={`flex-col font-serif md:flex md:flex-row space-y-4 md:space-y-0 md:space-x-6 text-white absolute md:static bg-gray-800 md:bg-transparent w-full md:w-auto transition-transform duration-300 ${
+            isOpen ? 'top-16 p-6 opacity-95 transform translate-y-0' : 'top-[-200px] opacity-0 transform -translate-x-40'
+          }`}
+        >
           {isAuthenticated ? (
             <>
               <li>
-                <Link to="/dashboard" className="mt-6 text-white rounded font-semibold ">Dashboard</Link>
+                <Link to="/dashboard" className="block mt-6 text-white rounded font-semibold hover:bg-gray-700 transition duration-200">Dashboard</Link>
               </li>
               <li>
-                <Link to="/buytokens" className="mt-6   text-white rounded font-semibold ">Buy Tokens</Link>
-              </li>
-              <li>
-                <Link to="/profile" className="mt-6 text-white rounded font-semibold ">Profile</Link>
-              </li>
-              <li>
-                <Link to="/" onClick={handleLogout} className="mt-6  text-white rounded font-semibold ">Sign out</Link>
+                <Link to="/" onClick={handleLogout} className="block mt-6 text-white rounded font-semibold hover:bg-gray-700 transition duration-200">Sign out</Link>
               </li>
             </>
           ) : (
             <>
               <li>
-                <Link to="/" className="mt-6   text-white rounded font-bold hover:bg- transition duration-300">Home</Link>
+                <Link to="/" className="block mt-6 text-white rounded font-bold hover:bg-gray-700 transition duration-200">Home</Link>
               </li>
+              {/* <li>
+                <Link to="/signin" className="block mt-6 text-white rounded font-bold hover:bg-gray-700 transition duration-200">Sign In</Link>
+              </li> */}
               <li>
-                <Link to="/signin"  className="mt-6   text-white rounded font-bold hover: transition duration-300">Sign In</Link>
-              </li>
-              <li>
-                <Link to="/signup" className="mt-6  text-white rounded font-bold  hover: transition duration-300">Sign Up</Link>
+                <Link to="/" onClick={handleLogout} className="block mt-6 text-white rounded font-semibold hover:bg-gray-700 transition duration-200">Sign out</Link>
               </li>
             </>
           )}

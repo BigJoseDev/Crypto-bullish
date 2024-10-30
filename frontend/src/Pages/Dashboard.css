@@ -12,17 +12,19 @@
     color: white; /* Adjust color for visibility */
     font-size: 1.5rem;
     cursor: pointer;
-    z-index: 10; /* Ensure it's on top */
+    margin-top: 8px;
+    z-index: 20; /* Ensure it's on top */
   }
   
   .sidebar {
     width: 250px;
-    background-color: #1c1c1e;
+    background-color: #1F2937;
     color: white;
     height: 100vh;
     position: fixed; /* Keep it fixed */
     top: 0; /* Align with the top */
     left: 0; /* Align with the left */
+    margin-top: 10px;
     transition: width 0.3s ease-in-out;
     overflow: hidden; /* Prevent overflow when closed */
   }
@@ -139,4 +141,11 @@
   }
 
   
+  /* media query for mobile */
+  @media (max-width: 768px) {
+
+  .hamburger {
+    display: none;
+  }
     
+  }
