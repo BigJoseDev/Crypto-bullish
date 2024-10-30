@@ -37,7 +37,7 @@ const SignUp = () => {
 
   return (
     <div className="flex h-screen w-full bg-black text-white justify-center items-center" style={{
-      backgroundImage: `url('https://criptotendencia.com/wp-content/uploads/2024/03/En-oferta-Pantera-Capital-busca-comprar-SOL-del-patrimonio-de-FTX.jpg')`,
+      backgroundImage: `url('https://t4.ftcdn.net/jpg/02/08/93/47/360_F_208934723_tv3JlZKwlOhF1QiQdBruyaetwLRxTQCD.jpg')`,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',

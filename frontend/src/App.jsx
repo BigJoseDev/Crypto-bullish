@@ -14,7 +14,7 @@ function App() {
 
   return (
     <Router>
-      {/* <Navbar setIsAuthenticated={setIsAuthenticated} /> */}
+      <Navbar setIsAuthenticated={setIsAuthenticated} />
       <div>
         <Routes>
           <Route path="/" element={<Home />} />

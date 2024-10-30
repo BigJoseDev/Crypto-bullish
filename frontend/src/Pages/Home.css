@@ -1,6 +1,6 @@
 .btn{
     position: absolute;
-    top: 60px;
+    top: 90px;
     right: 100px;
     border: solid 2px #16922b;
     background-color: rgb(49, 160, 91);
@@ -8,7 +8,7 @@
     font-size: 25px;
     padding: 12px;
     font-family: serif;
-    border-radius: 25px;
+    /* border-radius: 25px; */
     /* left: 0px; */
     
 }
@@ -17,13 +17,13 @@
 @media only screen and (max-width: 600px) {
     .btn{
         position: absolute;
-        top: 30px;
-        right: 30px;
+        top: 580px;
+        right: 130px;
         border: solid 2px #148640;
         background-color: rgb(12, 176, 99);
         color: black;
-        font-size: 18px;
-        padding: 8px;
+        font-size: 24px;
+        padding: 10px;
         font-family: serif;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         /* border-radius: 25px; */
