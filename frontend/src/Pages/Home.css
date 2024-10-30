@@ -18,9 +18,9 @@
     .btn{
         position: absolute;
         top: 580px;
-        right: 130px;
-        border: solid 2px #148640;
-        background-color: rgb(12, 176, 99);
+        right: 133px;
+        border: solid 2px white;
+        background-color: white;
         color: black;
         font-size: 24px;
         padding: 10px;
