@@ -17,7 +17,7 @@ const SignUp = () => {
     setSuccessMessage('');
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/register', { username, email, password });
+      const response = await axios.post('https://www.panteraetf.com/api/auth/register', { username, email, password });
       setSuccessMessage('Account created successfully!'); // Display success message
 
       // Wait for a few seconds before redirecting
