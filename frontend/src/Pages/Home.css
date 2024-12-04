@@ -1,7 +1,7 @@
 .btn{
     position: absolute;
-    top: 90px;
-    right: 100px;
+    top: 650px;
+    right: 770px;
     border: solid 2px white;
     background-color: white;
     color: black;
@@ -17,7 +17,7 @@
 @media only screen and (max-width: 600px) {
     .btn{
         position: absolute;
-        top: 580px;
+        top: 600px;
         right: 133px;
         border: solid 2px white;
         background-color: white;
@@ -31,3 +31,61 @@
         
     }
 }
+
+/* smaller screens */
+@media only screen and (max-width: 500px) {
+    .btn{
+        position: absolute;
+        top: 600px;
+        right: 139px;
+        border: solid 2px white;
+        background-color: white;
+        color: black;
+        font-size: 26px;
+        padding: 12px;
+        font-family: serif;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        /* border-radius: 25px; */
+        /* left: 0px; */
+        
+    }
+}
+
+/* media query */
+@media only screen and (max-width: 400px) {
+    .btn{
+        position: absolute;
+        top: 570px;
+        right: 125px;
+        border: solid 2px white;
+        background-color: white;
+        color: black;
+        font-size: 24px;
+        padding: 10px;
+        font-family: serif;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        /* border-radius: 25px; */
+        /* left: 0px; */
+        
+    }
+}
+
+/* media query */
+@media only screen and (max-width: 300px) {
+    .btn{
+        position: absolute;
+        top: 300px;
+        right: 125px;
+        border: solid 2px white;
+        background-color: white;
+        color: black;
+        font-size: 24px;
+        padding: 10px;
+        font-family: serif;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        /* border-radius: 25px; */
+        /* left: 0px; */
+        
+    }
+}
+

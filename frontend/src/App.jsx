@@ -8,6 +8,8 @@ import SignIn from './Pages/SignIn';
 import SignUp from './Pages/SignUp';
 import BuyToken from './Pages/BuyToken';
 import Profile from './Pages/Profile';
+import Footer from './Components/Footer';
+import About from './Pages/About';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Main authentication state
@@ -21,11 +23,14 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/signin" element={<SignIn setIsAuthenticated={setIsAuthenticated} />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path='/about' element ={<About/>}  />
           <Route path="/buytoken" element={<BuyToken />} />
           <Route path="/profile" element={<Profile />} />
         </Routes>
+        <Footer/>
       </div>
     </Router>
+    
   );
 }
 

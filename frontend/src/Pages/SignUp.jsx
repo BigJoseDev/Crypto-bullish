@@ -1,50 +1,43 @@
-// src/Pages/SignUp.jsx
 import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
+import { useNavigate } from 'react-router-dom';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebaseConfig'; // Import Firebase auth instance
 
 const SignUp = () => {
-  const navigate = useNavigate(); // Initialize useNavigate
-  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [username, setUsername] = useState('');
+  const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false); // New loading state
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage('');
+    setError('');
     setSuccessMessage('');
+    setIsLoading(true); // Set loading to true on submit
 
     try {
-      const response = await axios.post('https://www.panteraetf.com/api/auth/register', { username, email, password });
-      setSuccessMessage('Account created successfully!'); // Display success message
-
-      // Wait for a few seconds before redirecting
+      // Register user with Firebase
+      await createUserWithEmailAndPassword(auth, email, password);
+      setSuccessMessage('Account created successfully!');
+      
       setTimeout(() => {
-        navigate('/signin'); // Redirect to sign-in page
-      }, 4000); // 4000 milliseconds = 3 seconds
+        navigate('/signin');
+        setIsLoading(false); // Reset loading state (optional)
+      }, 1000);
     } catch (error) {
-      setErrorMessage(error.response.data.message || 'Registration failed'); // Display error message
-      console.error(error);
+      setError(error.message || 'Registration failed');
+      setIsLoading(false); // Reset loading state on error
     }
   };
 
-  const handleSignIn = () => {
-    // Redirect to the sign-in page
-    navigate('/signin'); // Change this to the desired route
-  };
-
   return (
-    <div className="flex h-screen w-full bg-black text-white justify-center items-center" style={{
-      backgroundImage: `url('https://t4.ftcdn.net/jpg/02/08/93/47/360_F_208934723_tv3JlZKwlOhF1QiQdBruyaetwLRxTQCD.jpg')`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
-    }}>
-      <div className="bg-black bg-opacity-70 p-8 rounded-lg shadow-2xl w-full max-w-md">
+    <div className="rounded-lg px-6 sm:px-10 md:px-14 lg:px-12 my-5 md:mx-10 flex flex-col items-center gap-4 py-16 text-white bg-gray-900">
+      <div className="bg-gray-900 mt-8 mb-8 bg-opacity-70 p-8 rounded-lg shadow-2xl w-full max-w-md">
         <h1 className="text-4xl font-bold text-center mb-6">Sign Up</h1>
-        {errorMessage && <p className="text-red-500 text-center mb-4">{errorMessage}</p>}
+        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
         {successMessage && (
           <div className="text-green-500 text-center mb-4">
             <p className="text-lg">{successMessage}</p>
@@ -76,14 +69,49 @@ const SignUp = () => {
             required
             className="border rounded-lg p-3 bg-gray-800 text-white placeholder-gray-400 border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
           />
-          <button type="submit" className="p-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300 shadow-lg">
-            Sign Up
+          <button
+            type="submit"
+            disabled={isLoading} // Disable the button when loading
+            className={`${
+              isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110'
+            } bg-gradient-to-r from-green-400 to-blue-500 text-white text-sm sm:text-base px-10 py-4 rounded-full mt-6 transform transition-all ease-in-out duration-300 shadow-xl`}
+          >
+            {isLoading ? (
+              <span className="flex items-center justify-center">
+                <svg
+                  className="animate-spin h-5 w-5 mr-2 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v8H4z"
+                  ></path>
+                </svg>
+                Signing Up...
+              </span>
+            ) : (
+              'Sign Up'
+            )}
           </button>
         </form>
         <div className="text-center mt-6">
           <p className="text-sm text-gray-300">
             Already have an account?{' '}
-            <button onClick={handleSignIn} className="text-green-400 hover:underline">
+            <button
+              onClick={() => navigate('/signin')}
+              className="text-green-400 hover:underline"
+            >
               Sign In
             </button>
           </p>
